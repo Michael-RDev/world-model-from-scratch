@@ -7,7 +7,11 @@ authors = [
     { name = "Michael-Rusu", email = "89427972+Michael-Rusu@users.noreply.github.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "numpy>=2.0",
+    "opencv-python>=4.10",
+    "pygame>=2.6",
+]
 
 [project.scripts]
 world-model-from-scratch = "world_model_from_scratch:main"
