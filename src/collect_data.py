@@ -1,5 +1,3 @@
-import argparse
-import os
 import json
 import numpy as np
 from pathlib import Path
@@ -9,6 +7,15 @@ from envs.balence_env import BalancingEnv
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "artifacts"
+
+ENVIRONMENTS = ("car", "balance")
+COLLECTION_SETTINGS = {
+    "episodes": 50,
+    "steps": 200,
+    "obs_type": "image",
+    "image_size": (64, 64),
+    "seed": 0,
+}
 
 
 class OUActionNoise:
@@ -153,29 +160,11 @@ def collect_dataset(env_name, episodes, steps, obs_type, image_size, out_dir, se
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-    parser.add_argument("--env", choices=["car", "balance", "both"], default="both")
-    parser.add_argument("--episodes", type=int, default=50)
-    parser.add_argument("--steps", type=int, default=200)
-    parser.add_argument("--obs-type", choices=["image", "state"], default="image")
-    parser.add_argument("--image-size", type=int, nargs=2, default=[64, 64])
-    parser.add_argument("--out", type=str, default=str(DATA_PATH))
-    parser.add_argument("--seed", type=int, default=0)
-    args = parser.parse_args()
-
-    envs_to_run = ["car", "balance"] if args.env == "both" else [args.env]
-    for name in envs_to_run:
-        out_dir = os.path.join(args.out, name) if args.env == "both" else args.out
+    for name in ENVIRONMENTS:
         collect_dataset(
-            name,
-            args.episodes,
-            args.steps,
-            args.obs_type,
-            tuple(args.image_size),
-            out_dir,
-            seed=args.seed,
+            env_name=name,
+            out_dir=DATA_PATH / name,
+            **COLLECTION_SETTINGS,
         )
 
 

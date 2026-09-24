@@ -1,4 +1,3 @@
-import argparse
 import os
 import sys
 import time
@@ -9,13 +8,16 @@ os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
 import numpy as np
 import pygame
 
+ROOT = Path(__file__).resolve().parents[1]
+
 if __package__ in (None, ""):
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    sys.path.insert(0, str(ROOT))
 
 from envs.car_env import CarDrivingEnv
 from envs.balence_env import BalancingEnv
 
 
+START_ENV = "car"  # "car" or "balance
 RENDER_FPS = 60
 PHYSICS_HZ = 120
 BALANCE_KEY_FORCE_SCALE = 1.0
@@ -273,10 +275,9 @@ def run_demo(env, name):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--env", choices=("car", "balance"), default="car")
-    args = parser.parse_args()
-    name = args.env
+    name = START_ENV
+    if name not in ("car", "balance"):
+        raise ValueError('START_ENV must be "car" or "balance"')
     try:
         while True:
             env_class = CarDrivingEnv if name == "car" else BalancingEnv
